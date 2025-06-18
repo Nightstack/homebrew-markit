@@ -1,0 +1,26 @@
+name: Bump Homebrew Formula
+
+on:
+  repository_dispatch:
+    types: [bump-homebrew]
+
+  workflow_dispatch:
+
+jobs:
+  bump:
+    name: Bump Formula
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Bump version
+        uses: mislav/bump-homebrew-formula-action@v2
+        with:
+          formula-name: markit
+          homebrew-tap: Nightstack/homebrew-markit
+          tag: ${{ github.event.client_payload.tag }}
+          release-url: https://github.com/Nightstack/markit/releases/download/${{ github.event.client_payload.tag }}/markit-${{ github.event.client_payload.tag }}.tar.gz
+          commit-message: "Bump markit to ${{ github.event.client_payload.tag }}"
+        env:
+          COMMITTER_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}
